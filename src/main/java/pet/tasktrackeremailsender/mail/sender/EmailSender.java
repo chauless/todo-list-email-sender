@@ -11,7 +11,7 @@ public class EmailSender {
 
     private final JavaMailSender emailSender;
 
-    public void sendEmail(SimpleMailMessage email) {
-        emailSender.send(email);
+    public void sendEmail(SimpleMailMessage mailMessage) {
+        emailSender.send(mailMessage);
     }
 }

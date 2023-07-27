@@ -1,6 +1,7 @@
 package pet.tasktrackeremailsender.mail.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import pet.tasktrackeremailsender.dto.EmailDto;
@@ -11,15 +12,17 @@ import pet.tasktrackeremailsender.mail.sender.EmailSender;
 public class EmailSenderService {
 
     private final EmailSender emailSender;
-    private final String senderEmail = "noreply@tasktracker.com";
+    @Value("${spring.mail.sender.email}")
+    private String senderEmail;
 
     public void sendEmail(EmailDto emailDto) {
-            SimpleMailMessage email = new SimpleMailMessage();
-            email.setFrom(senderEmail);
-            email.setTo(emailDto.getReceiverEmail());
-            email.setSubject(emailDto.getSubject());
-            email.setText(emailDto.getBody());
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom(senderEmail);
 
-            emailSender.sendEmail(email);
+        mailMessage.setTo(emailDto.getReceiverEmail());
+        mailMessage.setSubject(emailDto.getSubject());
+        mailMessage.setText(emailDto.getBody());
+
+        emailSender.sendEmail(mailMessage);
     }
 }
