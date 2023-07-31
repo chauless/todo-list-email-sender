@@ -12,8 +12,7 @@ import pet.tasktrackeremailsender.mail.sender.EmailSender;
 public class EmailSenderService {
 
     private final EmailSender emailSender;
-    @Value("${spring.mail.sender.email}")
-    private String senderEmail;
+    private String senderEmail = "no-reply@tasktracker.com";
 
     public void sendEmail(EmailDto emailDto) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
