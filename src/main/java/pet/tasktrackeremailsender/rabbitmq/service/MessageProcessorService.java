@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.amqp.core.Message;
 import pet.tasktrackeremailsender.dto.EmailDto;
 import pet.tasktrackeremailsender.mail.service.EmailSenderService;
+import pet.tasktrackeremailsender.rabbitmq.service.chainofresponsibility.EmailMessageHandler;
+import pet.tasktrackeremailsender.rabbitmq.service.chainofresponsibility.MessageHandler;
 
 import java.io.IOException;
 
@@ -16,8 +18,14 @@ public class MessageProcessorService {
     private final EmailSenderService emailSenderService;
     private final ObjectMapper objectMapper;
 
+    private MessageHandler buildChain() {
+        MessageHandler emailHandler = new EmailMessageHandler(emailSenderService, objectMapper);
+
+        return emailHandler;
+    }
+
     public void processMessage(Message message) throws IOException {
-        EmailDto emailDto = objectMapper.readValue(message.getBody(), EmailDto.class);
-        emailSenderService.sendEmail(emailDto);
+        MessageHandler handlerChain = buildChain();
+        handlerChain.handle(message);
     }
 }
